@@ -1,5 +1,3 @@
-// game_canvas, height: 600, width: 800
-
 function init() {
 	var canvas = document.getElementById("game_canvas");
 	if (canvas.getContext) {
