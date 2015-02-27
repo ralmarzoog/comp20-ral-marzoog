@@ -99,7 +99,10 @@
 		function sendInfo() {
 			datastoreRequest.open("POST", "https://secret-about-box.herokuapp.com/sendLocation", true);
 			datastoreRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			var str = "login="+name+"&lat="+lat+"&lng="+lng;
 			datastoreRequest.send("login="+name+"&lat="+lat+"&lng="+lng);
+			console.log(datastoreRequest);
+			console.log(datastoreRequest.response);
 		}
 	</script>
 </head>
