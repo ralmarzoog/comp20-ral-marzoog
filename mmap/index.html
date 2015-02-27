@@ -40,7 +40,8 @@
 					lng = position.coords.longitude;
 					sendInfo();
 					console.log("After send info");
-					response = JSON.parse(datastoreRequest.responseText);
+					console.log(datastoreRequest.response);
+					response = JSON.parse(datastoreRequest.response);
 					console.log("After parsing");
 					renderMap(response);
 					console.log("After rendering");
