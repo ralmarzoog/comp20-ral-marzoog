@@ -10,6 +10,7 @@
 		var name = "BenHarris";
 		var lat = 0;
 		var lng = 0;
+		var response;
 		var datastoreRequest = new XMLHttpRequest();
 		var me = new google.maps.LatLng(lat, lng);
 
@@ -60,6 +61,7 @@
 				position: me,
 				title: name
 			});
+
 			marker.setMap(map);
 
 			google.maps.event.addListener(marker, 'click', function() {
@@ -80,15 +82,15 @@
 		function createMarker(person)
 		{
 			var theirLatLng = new google.maps.LatLng(person.lat, person.lng);
-			var theirMarker = new google.maps.Marker({
+			var marker = new google.maps.Marker({
 				map: map,
 				position: theirLatLng,
 				title: person.login
 			});
 
-			google.maps.event.addListener(theirMarker, 'click', function() {
+			google.maps.event.addListener(marker, 'click', function() {
 				infowindow.close();
-				infowindow.setContent(theirMarker.title);
+				infowindow.setContent(person.login);
 				infowindow.open(map, this);
 			});
 		}
