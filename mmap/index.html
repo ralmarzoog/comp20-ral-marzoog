@@ -10,7 +10,8 @@
 		var name = "BenHarris";
 		var lat = 0;
 		var lng = 0;
-		var response;
+		var datastoreResponse = null;
+		var response = null;
 		var datastoreRequest = new XMLHttpRequest();
 		var me = new google.maps.LatLng(lat, lng);
 
@@ -40,8 +41,8 @@
 					lng = position.coords.longitude;
 					sendInfo();
 					console.log("After send info");
-					console.log(datastoreRequest.response);
-					response = JSON.parse(datastoreRequest.response);
+					console.log(datastoreResponse);
+					response = JSON.parse(datastoreResponse.response);
 					console.log("After parsing");
 					renderMap(response);
 					console.log("After rendering");
@@ -100,9 +101,9 @@
 			datastoreRequest.open("POST", "https://secret-about-box.herokuapp.com/sendLocation", true);
 			datastoreRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			var str = "login="+name+"&lat="+lat+"&lng="+lng;
-			datastoreRequest.send("login="+name+"&lat="+lat+"&lng="+lng);
-			console.log(datastoreRequest);
-			console.log(datastoreRequest.response);
+			datastoreResponse = datastoreRequest.send("login="+name+"&lat="+lat+"&lng="+lng);
+			console.log(datastoreResponse);
+			console.log(datastoreResponse.response);
 		}
 	</script>
 </head>
