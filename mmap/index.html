@@ -10,7 +10,6 @@
 		var name = "BenHarris";
 		var lat = 0;
 		var lng = 0;
-		var request = new XMLHttpRequest();
 		var datastoreRequest = new XMLHttpRequest();
 		var me = new google.maps.LatLng(lat, lng);
 
@@ -80,7 +79,7 @@
 
 		function createMarker(person)
 		{
-			var theirLatLNg = new google.maps.LatLng(person.lat, person.lng);
+			var theirLatLng = new google.maps.LatLng(person.lat, person.lng);
 			var theirMarker = new google.maps.Marker({
 				map: map,
 				position: theirLatLng,
