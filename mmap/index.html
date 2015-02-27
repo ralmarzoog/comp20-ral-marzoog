@@ -4,8 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="mmap.css">
-	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;libraries=places">
-	</script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;libraries=places"></script>
 
 	<script>
 		var name = "BenHarris";
@@ -14,11 +13,13 @@
 		var request = new XMLHttpRequest();
 		var datastoreRequest = new XMLHttpRequest();
 		var me = new google.maps.LatLng(lat, lng);
+
 		var options = {
 			zoom: 13,
 			center: me,
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		};
+
 		var map;
 		var marker;
 		var infowindow = new google.maps.InfoWindow();
@@ -38,7 +39,11 @@
 					lat = position.coords.latitude;
 					lng = position.coords.longitude;
 					sendInfo();
-					renderMap(JSON.parse(datastoreRequest.responseText));
+					console.log("After send info");
+					response = JSON.parse(datastoreRequest.responseText);
+					console.log("After parsing");
+					renderMap(response);
+					console.log("After rendering");
 				});
 			} else {
 				alert("Your browser does not support geolocation.");
@@ -71,21 +76,20 @@
 			for (var i = 0; i < people.length; i++) {
 				createMarker(people[i]);
 			}
-			
 		}
 
 		function createMarker(person)
 		{
 			var theirLatLNg = new google.maps.LatLng(person.lat, person.lng);
-			var marker = new google.maps.Marker({
+			var theirMarker = new google.maps.Marker({
 				map: map,
 				position: theirLatLng,
 				title: person.login
 			});
 
-			google.maps.event.addListener(marker, 'click', function() {
+			google.maps.event.addListener(theirMarker, 'click', function() {
 				infowindow.close();
-				infowindow.setContent(marker.title);
+				infowindow.setContent(theirMarker.title);
 				infowindow.open(map, this);
 			});
 		}
