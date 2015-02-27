@@ -49,7 +49,36 @@
 					 	response = JSON.parse(datastoreRequest.responseText);
 					} 
 					console.log("After parsing");
-					renderMap(response);
+
+					me = new google.maps.LatLng(lat, lng);
+					map.panTo(me);
+
+					marker = new google.maps.Marker({
+						position: me,
+						title: myLogin
+					});
+
+					marker.setMap(map);
+
+					google.maps.event.addListener(marker, 'click', function() {
+						infowindow.setContent(marker.title);
+						infowindow.open(map, marker);
+					});
+
+					for (var i = 0; i < response.length; i++) {
+						var theirLatLng = new google.maps.LatLng(response[i].lat, response[i].lng);
+						var marker = new google.maps.Marker({
+							map: map,
+							position: theirLatLng,
+							title: response[i].login
+						});
+
+						google.maps.event.addListener(marker, 'click', function() {
+							infowindow.close();
+							infowindow.setContent(response[i].login);
+							infowindow.open(map, this);
+						});
+					}
 					console.log("After rendering");
 				});
 			} else {
