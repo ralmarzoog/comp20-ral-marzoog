@@ -22,7 +22,6 @@
 		var map;
 		var marker;
 		var infowindow = new google.maps.InfoWindow();
-		var places;
 
 		function init()
 		{
@@ -86,7 +85,7 @@
 
 			google.maps.event.addListener(marker, 'click', function() {
 				infowindow.close();
-				infowindow.setContent(place.name);
+				infowindow.setContent(marker.title);
 				infowindow.open(map, this);
 			});
 		}
