@@ -17,6 +17,7 @@
 				});
 			}
 			latlng = new google.maps.LatLng(lat, lng, false);
+			console.log(latlng.lat() + " " + latlng.lng());
 			var mapOptions = {
 				center: { lat: latlng.lat(), lng: latlng.lng()},
 				zoom: 8
