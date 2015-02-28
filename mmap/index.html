@@ -47,7 +47,7 @@
 					console.log(datastoreRequest);
 					datastoreRequest.onreadystatechange = function()
 					{
-						console.log("Ready state changed");
+						console.log("Ready state changed " + datastoreRequest.readystate + " " + datastoreRequest + datastoreRequest.status);
 						if (datastoreRequest.readystate == 4 && datastoreRequest.status == 200) {
 								response = JSON.parse(datastoreRequest.responseText);
 			 
