@@ -45,6 +45,16 @@
 
 					console.log("After send info");
 					console.log(datastoreRequest);
+				});
+			} else {
+				alert("Your browser does not support geolocation.");
+			}
+			console.log("Leaving getMyLocation");
+		}
+
+		datastoreRequest.onreadystatechange=function()
+		{
+			if (datastoreRequest.readystate == 4 && datastoreRequest.status == 200) {
 					response = JSON.parse(datastoreRequest.responseText);
  
 					console.log("Response is " + response);
@@ -79,11 +89,7 @@
 						});
 					}
 					console.log("After rendering");
-				});
-			} else {
-				alert("Your browser does not support geolocation.");
-			}
-			console.log("Leaving getMyLocation");
+				}
 		}
 
 		function renderMap(people)
