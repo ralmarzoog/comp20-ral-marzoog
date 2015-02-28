@@ -15,7 +15,7 @@
 		var me = new google.maps.LatLng(lat, lng);
 
 		var options = {
-			zoom: 16,
+			zoom: 14,
 			center: me,
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		};
@@ -113,10 +113,12 @@
 			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 			var d = R * c;
 
+			console.log(person.login + " " + d);
+
 			var marker = new google.maps.Marker({
 				map: map,
 				position: theirLatLng,
-				title: person.login + "\n" + d + " miles away"
+				title: person.login + " - " + d + " miles away"
 			});
 
 			google.maps.event.addListener(marker, 'click', function() {
