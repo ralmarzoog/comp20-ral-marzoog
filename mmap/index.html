@@ -47,40 +47,13 @@
 					console.log(datastoreRequest);
 					datastoreRequest.onreadystatechange = function()
 					{
+						console.log("Ready state changed");
 						if (datastoreRequest.readystate == 4 && datastoreRequest.status == 200) {
 								response = JSON.parse(datastoreRequest.responseText);
 			 
 								console.log("Response is " + response);
 
-								me = new google.maps.LatLng(lat, lng);
-								map.panTo(me);
-
-								marker = new google.maps.Marker({
-									position: me,
-									title: myLogin
-								});
-
-								marker.setMap(map);
-
-								google.maps.event.addListener(marker, 'click', function() {
-									infowindow.setContent(marker.title);
-									infowindow.open(map, marker);
-								});
-
-								for (var i = 0; i < response.length; i++) {
-									var theirLatLng = new google.maps.LatLng(response[i].lat, response[i].lng);
-									var marker = new google.maps.Marker({
-										map: map,
-										position: theirLatLng,
-										title: response[i].login
-									});
-
-									google.maps.event.addListener(marker, 'click', function() {
-										infowindow.close();
-										infowindow.setContent(response[i].login);
-										infowindow.open(map, this);
-									});
-								}
+								renderMap(response);
 								console.log("After rendering");
 							}
 					}
