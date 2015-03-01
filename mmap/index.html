@@ -69,7 +69,6 @@
 		function renderMap(people)
 		{
 			console.log("In renderMap");
-			/*
 			me = new google.maps.LatLng(lat, lng);
 			map.panTo(me);
 
@@ -84,7 +83,7 @@
 				infowindow.setContent(marker.title);
 				infowindow.open(map, marker);
 			});
-*/
+
 			displayPeople(people);
 		}
 
@@ -114,7 +113,7 @@
 			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 			var d = R * c;
 
-			var markerText = person.login + " - " + d + " miles away";
+			var markerText = person.login + "\n" + d + " miles away";
 
 			console.log(markerText);
 
@@ -126,7 +125,7 @@
 
 			google.maps.event.addListener(marker, 'click', function() {
 				infowindow.close();
-				infowindow.setContent(person.login);
+				infowindow.setContent(markerText);
 				infowindow.open(map, this);
 			});
 		}
