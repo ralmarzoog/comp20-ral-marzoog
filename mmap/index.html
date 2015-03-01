@@ -69,6 +69,7 @@
 		function renderMap(people)
 		{
 			console.log("In renderMap");
+			/*
 			me = new google.maps.LatLng(lat, lng);
 			map.panTo(me);
 
@@ -83,7 +84,7 @@
 				infowindow.setContent(marker.title);
 				infowindow.open(map, marker);
 			});
-
+*/
 			displayPeople(people);
 		}
 
@@ -115,12 +116,12 @@
 
 			var markerText = person.login + " - " + d + " miles away";
 
-			console.log(person.login + " " + d);
+			console.log(markerText);
 
 			var marker = new google.maps.Marker({
 				map: map,
 				position: theirLatLng,
-				title: person.login + " - " + d + " miles away"
+				title: markerText
 			});
 
 			google.maps.event.addListener(marker, 'click', function() {
