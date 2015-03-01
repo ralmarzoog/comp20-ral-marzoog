@@ -74,7 +74,8 @@
 
 			marker = new google.maps.Marker({
 				position: me,
-				title: myLogin
+				title: myLogin,
+				icon: "marker.png"
 			});
 
 			marker.setMap(map);
@@ -89,7 +90,7 @@
 
 		function displayPeople(people)
 		{
-			for (var i = 0; i < people.length; i++) {
+			for (var i = 1; i < people.length; i++) {
 				createMarker(people[i]);
 			}
 		}
