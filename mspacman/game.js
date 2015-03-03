@@ -4,7 +4,7 @@ function init() {
 		ctx = canvas.getContext('2d');
 		var img = new Image();
 		img.addEventListener("load", function() {
-			ctx.drawImage(img, 320, 0, 460, 140, 0, 0, 460, 140);
+			ctx.drawImage(img, 320, 0, 470, 138, 0, 0, 470, 138);
 			ctx.drawImage(img, 80, 0, 20, 20, 115, 91, 20, 20);
 		}, false);
 
