@@ -11,8 +11,9 @@ function parse() {
 function parseData() {
     if (request.readyState == 4) {
         resp = JSON.parse(request.responseText);
+        messagesDiv = document.getElementById("messages");
         for (var i = 0; i < resp.length; i++) {
-            messages.innerHTML = "<p>" + resp[i].content + " - " + resp[i].username + "</p>";
+            messagesDiv.innerHTML += "<p>" + resp[i].content + " - " + resp[i].username + "</p>";
         }
     }
 }
