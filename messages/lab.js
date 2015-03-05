@@ -1,17 +1,16 @@
 // Your JavaScript code here...
 
 function parse() {
-    var req = new XMLHttpRequest();
+    request = new XMLHttpRequest();
 
-    req.open("GET", "data.json", true);
-    req.onreadystatechange = processData();
-    req.send();
+    request.open("GET", "data.json", true);
+    request.onreadystatechange = parseData();
+    request.send();
 }
 
-function processData() {
-    if (this.readyState == 4 && this.status == 200) {
-        resp = JSON.parse(this.responseText);
-        
+function parseData() {
+    if (request.readyState == 4) {
+        resp = JSON.parse(request.responseText);
         for (var i = 0; i < resp.length; i++) {
             messages.innerHTML = "<p>" + resp[i].content + " - " + resp[i].username + "</p>";
         }
