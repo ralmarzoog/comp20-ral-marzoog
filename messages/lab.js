@@ -1,12 +1,5 @@
 // Your JavaScript code here...
 
-function parse() {
-    request = new XMLHttpRequest();
-
-    request.open("GET", "data.json", true);
-    request.onreadystatechange = parseData();
-    request.send();
-}
 
 function parseData() {
     if (request.readyState == 4 && request.status == 200) {
@@ -18,3 +11,10 @@ function parseData() {
     }
 }
 
+function parse() {
+    request = new XMLHttpRequest();
+
+    request.open("GET", "data.json", true);
+    request.onreadystatechange = parseData();
+    request.send();
+}
