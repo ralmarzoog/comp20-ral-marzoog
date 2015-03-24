@@ -10,7 +10,7 @@
     $(document).ready(function() {
 
       for (key in localStorage) {
-      $("#log").after("<p>" + key + " - " + localStorage[key] + "</p>");
+        $("#log").prepend("<p>" + key + " - " + localStorage[key] + "</p>");
       }
 
       $("#msg").keyup(function(event) {
@@ -20,7 +20,7 @@
           now = new Date();
           localStorage.setItem(now, entryText);
           entry = "<p>" + now + " - " + entryText + "</p>";
-          $("#log").after(entry);
+          $("#log").prepend(entry);
         }
       });
     });  
