@@ -9,8 +9,20 @@
 	  // Most of your work will be done here...
     $(document).ready(function() {
 
+      id = "captainslog";
+      keys = [];
       for (key in localStorage) {
-        $("#log").prepend("<p>" + key + " - " + localStorage[key] + "</p>");
+        if (key.substring(0,(id.length)) == id) {
+          keys.push(key);
+        }
+      }
+
+      keys.sort()
+
+      for (var i = 0; i < keys.length; i++) {
+        $("#log").prepend("<p>" + keys[i].substring(
+            id.length, keys[i].length) + " - " + 
+            localStorage[keys[i]] + "</p>");
       }
 
       $("#msg").keyup(function(event) {
@@ -18,7 +30,7 @@
           entryText = $("#msg").val();
           $("#msg").val("");
           now = new Date();
-          localStorage.setItem(now, entryText);
+          localStorage.setItem(id + now, entryText);
           entry = "<p>" + now + " - " + entryText + "</p>";
           $("#log").prepend(entry);
         }
@@ -33,3 +45,4 @@
 	<div id="log"></div>
 </body>
 </html>
+
