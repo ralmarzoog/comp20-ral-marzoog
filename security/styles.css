@@ -1,0 +1,31 @@
+html {
+  font-family: sans-serif;
+  margin: 20px;
+  font-size: 95%;
+}
+
+h1 {
+  margin-bottom: -10px;
+}
+
+
+img {
+  width: 100%;
+  max-width: 900px;
+}
+
+.smaller {
+  max-width: 500px;
+}
+
+h3 {
+  margin-top: 35px;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+li {
+  margin-bottom: 10px;
+}

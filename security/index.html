@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Security and Privacy Assessment | COMP 20</title>
+    <link rel="stylesheet" href="styles.css"/>
+  </head>
+
+  <body>
+    <h1>Security and Privacy Assessment of Marauder's Map</h1>
+    <p>Reema Al-Marzoog - April 14, 2015</p>
+
+    <h3>Introduction</h3>
+    <p>
+      My client, Dane Roberts, 
+      created a web application server that allows users to send it 
+      their location 
+      in the form of a latitude and longitude along with a unique identifier, 
+      a login, via a POST request. It stores these logins along with the most 
+      recent location that login checked in at and the date of that check-in. 
+      When a successful request is made, the server responds with a list of the
+      check-ins in JSON format.
+      These check-ins are also displayed on the home page. A single check-in can
+      also be accessed in JSON format by passing the login as a parameter to
+      the "/location.json" page.
+    </p>
+    <p>
+      My client also used their server to create a "Marauder's Map". His 
+      Marauder's Map is a web application that displays the location of the 
+      current user (i.e., the one currently visiting the Marauder's Map website)
+      marked by a special marker. It also displays the location of everyone else
+      who has checked-in and their distance away from the current user. Both 
+      Marauder's Map and its server were created for Tufts' COMP 20 course.
+    </p>
+
+    <p>
+      I was hired to assess Marauder's Map and its server for privacy and 
+      security vulnerabilities and to resolve these issues. 
+      What follows is a list of the main issues I found, how I found them, 
+      their severity, and how I resolved the issue.
+    </p>
+
+    <h3>Methodology</h3>
+
+      <p>
+        I mainly used two tools to find the security and privacy issues: 
+        PostMan and curl. PostMan is a Chrome plug-in that allows users to 
+        send HTTP requests to specified URLs. I used it to send POST requests
+        to my client's POST API, using parameters designed to exploit potential
+        security and privacy weaknesses. Similarly, curl also allows users to
+        send HTTP requests, but it does so through the command line and as a
+        result is more flexible in some ways. I ran tests on the code both 
+        locally so that I could gain further insight into the vulnerabilities
+        through the server's error messages as well as on my client's live 
+        sites to fully see the security pitfalls in action. I first ran 
+        attacks without looking at the code, the way an actual malicious user
+        would, and then I examined the code to see if I could find any more
+        potential causes for concern.
+      </p>
+
+    <h3>Abstract of Findings</h3>
+
+      <p>
+        Given that these applications are (arguably) inherently questionable
+        from a privacy point of view since they expose users' locations
+        to any one who wants to see them (though of course the login need not
+        be anything that could actually reveal the user's identity and the
+        latitude and longitude can be falsified), most of the issues I found
+        concerning were security-related. 
+      </p>
+      <p>
+        Most of the issues stemmed from the application's loose constraints
+        on user input. FINISH THIS.
+      </p>
+
+    <h3>Issues Found and Technical Analysis</h3>
+    <ol>
+      <li>
+        <h4>Cross-site scripting (XSS)</h4>
+        <ul>
+          <li>
+            <span class="bold">Location:</span> The script is injected through the POST API at 
+            drmmap.herokuapp.com/sendLocation and affects the GET API at 
+            drmmap.herokuapp.com/
+          </li>
+
+          <li>
+            <span class="bold">Severity:</span> High. Through XSS, malicious 
+            users can cause the site to malfunction, disrupting the user 
+            experience for legitimate users. Malicious users can also gain 
+            access to other users' cookies. They can also add links to malicious
+            websites or forward users there. It can be used for phishing scams. 
+            It can be used to render the web app completely unuseable by 
+            executing a function an infinite number of times (e.g. putting a
+            JavaScript <code>alert()</code> function in an infinite loop).
+            There are a lot of ways this 
+            vulnerability can be exploited, and it is very easy to do so.
+          </li>
+
+          <li>
+            <span class="bold">Description:</span> This XSS vulnerability allows
+            users to inject their own HTML or JavaScript into the database 
+            by submitting it as part of the login parameter because the server 
+            doesn't do anything to protect against code being inserted. Then, 
+            every time the login gets rendered (on the server's home page, for 
+            example), the HTML in the login gets rendered and if it includes 
+            JavaScript, the JavaScript is run.
+          </li>
+
+          <li>
+            <span class="bold">How it was found:</span>
+            <p>
+              This issue was found by sending a POST request to the /sendLocation 
+              route using the Google Chrome plugin PostMan. The login parameter
+              was set to "&ltscript&gtalert("XSS")&ltscript&gt"
+            </p>
+
+            <div><img src="Screen Shot 2015-04-21 at 10.07.12 PM.png"
+              alt="PostMan request" /></div>
+          </li>
+
+          <li>
+            <span class="bold">Proof of vulnerability:</span>
+
+            <p>Now, when one visits "drmmap.herokuapp.com", the script is run. 
+            In this case, that means that an alert pops up on the client's 
+            browser, as seen below.</p>
+            <div><img src="Screen Shot 2015-04-21 at 10.07.28 PM.png" 
+              alt="Inserted script gets executed."></div>
+
+            <p>Another side-effect is that the login for that entry shows up
+            as blank once the alert is closed.</p>
+
+            <div><img src="Screen Shot 2015-04-21 at 10.07.34 PM.png" 
+              alt="Login displays as blank." class="smaller"></div>
+          </li>
+
+          <li>
+          <span class="bold">Resolution:</span>
+            To resolve this issue, user input should be 
+            escaped before it is saved into the database. For example, convert
+            the <code>&lt</code> in the input to <code>&amp;lt</code>. Rather
+            than having a blacklist of characters, however, it is always a good
+            idea to have a whitelist of allowable characters. You are more 
+            likely to miss something with a blacklist. So, using regular
+            expressions, convert special characters to their HTML codes and then
+            filter the logins through a whitelist. If any code has already been
+            injected, these database must also be searched and sanitized in the
+            same way.
+          </li>
+        </ul>
+      </li>
+
+      <li>
+       <h4>Server crashes on blank or malformed data</h4>
+        <ul>
+          <li>
+            <span class="bold">Location:</span> POST API at "/sendLocation" 
+          </li>
+
+          <li>
+            <span class="bold">Severity:</span> Moderate to High. This 
+            causes the app to completely crash, but it's arguably better
+            than the vulnerabilities inherent in the previous issue discussed,
+            XSS, which include phishing schemes, and it's easier to fix.
+          </li>
+
+          <li>
+            <span class="bold">Description:</span> When a POST request is sent
+            to "/sendLocation" and any of the parameters are malformed in some
+            way, the server crashes. Malformed input I tested
+            out include leaving one of the parameters completetly blank and 
+            adding an ampersand to the parameter list (e.g., 
+            <code>curl --data "login=LogIn&amp;&amp;lng=3&amp;lat=3"
+            drmmap.herokuapp.com/sendLocation</code> -- note the extra ampersand
+            between the login and the longitude parameter).
+          </li>
+
+          <li>
+            <span class="bold">How it was found:</span> 
+            <p>
+              I used curl to try out differently formed inputs that I thought
+              might cause a problem. The first to result in a server crash was
+              when I left a parameter blank:
+            </p>
+            <img src="Screen Shot 2015-04-23 at 7.55.05 PM.png" alt="POST request via curl with a blank parameter" class="smaller" />
+          </li>
+
+          <li>
+            <span class="bold">Proof of vulnerability:</span>
+            <p>The malformed input results in a server crash:</p>
+            <img src="Screen Shot 2015-04-23 at 7.54.54 PM.png" alt="Server crashes on malformed input" class="smaller"/>
+
+            <p>I ran the same curl command replacing localhost:3000 with 
+              the actual website URL and it resulted in an application error:
+            </p>
+
+            <img src="Screen Shot 2015-04-23 at 8.21.08 PM.png" alt="Heroku shows an application error when malformed input is sent." class="smaller" />
+          </li>
+
+          <li>
+            <span class="bold">Resolution:</span>
+            <p> 
+              Resolving this issue was 
+              fairly simple. I just added a a few lines of code that check
+              if the request body exists and if the request body has login,
+              lat, and lng fields to the beginning of the function that 
+              implements the POST API. If the request doesn't meet those 
+              requirements, I responded with a dummy error message. I also 
+              added a <code>return;</code> at the end of the check just to 
+              ensure that no other code in the function is run. Now the server
+              just returns the error message instead of crashing.
+            </p>
+
+            <div><img src="Screen Shot 2015-04-23 at 8.48.49 PM.png" alt="Code to check if input is well-formed" class="smaller"/></div>
+            <div><img src="Screen Shot 2015-04-23 at 8.13.00 PM.png" alt="Server returns an error message on malformed input" class="smaller" /></div>
+          </li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>Conclusion</h3>
+
+
+  </body>
+</html>
+
