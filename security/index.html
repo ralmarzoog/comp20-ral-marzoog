@@ -8,7 +8,7 @@
 
   <body>
     <h1>Security and Privacy Assessment of Marauder's Map</h1>
-    <p>Reema Al-Marzoog - April 14, 2015</p>
+    <p>Reema Al-Marzoog - April 24, 2015</p>
 
     <h3>Introduction</h3>
     <p>
@@ -169,7 +169,7 @@
             <span class="bold">Description:</span> When a POST request is sent
             to "/sendLocation" and any of the parameters are malformed in some
             way, the server crashes. Malformed input I tested
-            out include leaving one of the parameters completetly blank and 
+            out include leaving one of the parameters completely blank and 
             adding an ampersand to the parameter list (e.g., 
             <code>curl --data "login=LogIn&amp;&amp;lng=3&amp;lat=3"
             drmmap.herokuapp.com/sendLocation</code> -- note the extra ampersand
@@ -208,8 +208,9 @@
               implements the POST API. If the request doesn't meet those 
               requirements, I responded with a dummy error message. I also 
               added a <code>return;</code> at the end of the check just to 
-              ensure that no other code in the function is run. Now the server
-              just returns the error message instead of crashing.
+              ensure that no other code in the function is run. Putting the rest
+              of the code in an <code>else</code> is an equally viable option.
+              Now the server just returns the error message instead of crashing.
             </p>
 
             <div><img src="Screen Shot 2015-04-23 at 8.48.49 PM.png" alt="Code to check if input is well-formed" class="smaller"/></div>
