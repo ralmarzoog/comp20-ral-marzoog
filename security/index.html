@@ -12,14 +12,12 @@
 
     <h3>Introduction</h3>
     <p>
-      My client, Dane Roberts, 
-      created a web application server that allows users to send it 
-      their location 
-      in the form of a latitude and longitude along with a unique identifier -- 
-      a login -- via a POST request. It stores these logins along with the most 
-      recent location at which that login checked in and the date of the check-in. 
-      When a successful request is made, the server responds with a list of the
-      check-ins in JSON format.
+      My client, Dane Roberts, created a web application server that allows 
+      users to send it their location in the form of a latitude and longitude 
+      along with a unique identifier -- a login -- via a POST request. It 
+      stores these logins along with the most recent location at which that 
+      login checked in and the date of the check-in. When a successful request 
+      is made, the server responds with a list of the check-ins in JSON format.
       These check-ins are also displayed on the home page. A single check-in can
       also be accessed in JSON format by passing the login as a parameter to
       the "/location.json" page.
@@ -70,7 +68,14 @@
       </p>
       <p>
         Most of the issues stemmed from the application's loose constraints
-        on user input. FINISH THIS.
+        on user input. The server application is overly trusting over user
+        input; it does not sufficiently validate whether the data is present, 
+        is in the correct format, and does not contain any malicious content.
+        As a result, users can quite easily cause the server to crash or can
+        add their own content to the site, allowing them to disrupt user 
+        experience and even potentially coerce users into revealing sensitive
+        information. Fortunately, now that these issues have been found, they
+        can be quite easily resolved.
       </p>
 
     <h3>Issues Found and Technical Analysis</h3>
@@ -204,7 +209,8 @@
               Resolving this issue was 
               fairly simple. My client had code that checked whether a login,
               latitude parsed as a float, or longitude parsed as a float were
-              null:
+              null: 
+            </p>
 
             <div><img src="Screen Shot 2015-04-23 at 10.52.54 PM.png" 
               alt="Snippet of client's source code that checks if params are null"
@@ -228,6 +234,48 @@
             </div>
             <div><img src="Screen Shot 2015-04-23 at 11.11.47 PM.png" 
               alt="Server returns an error message on malformed input" class="smaller" /></div>
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <h4>MongoDb request injection attack</h4>
+        <ul>
+          <li>
+            <span class="bold">Location:</span> GET API at "/location.json"
+          </li>
+
+          <li>
+            <span class="bold">Severity:</span> Low. Currently, all that an attacker
+            could do with this vulnerability is force the "/location.json" API to
+            behave differently than it's supposed to, but the only additional 
+            information it can get is information that's already publicly accessible. It
+            can also cause an internal server error, but this does not shut down the whole
+            site the way the previous issue did. If there were data in the database that
+            was supposed to be private, I would be more concerned.
+          </li>
+
+          <li>
+            <span class="bold">Description:</span>The code for "/location.json" does
+            not check that the login passed in is a string, so a user can add a 
+            MongoDb query to the request. FINISH THIS.
+          </li>
+
+          <li>
+            <span class="bold">How it was found:</span> 
+            <p>
+              
+            </p>
+          </li>
+
+          <li>
+            <span class="bold">Proof of vulnerability:</span>
+            <p></p>
+          </li>
+
+          <li>
+            <span class="bold">Resolution:</span>
+            <p> </p>
           </li>
         </ul>
       </li>
