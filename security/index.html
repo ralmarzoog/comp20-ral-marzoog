@@ -59,23 +59,28 @@
     <h3>Abstract of Findings</h3>
 
       <p>
-        Given that these applications are (arguably) inherently questionable
+        Given that these applications are arguably inherently questionable
         from a privacy point of view since they expose users' locations
         to any one who wants to see them (though of course the login need not
         be anything that could actually reveal the user's identity and the
         latitude and longitude can be falsified), most of the issues I found
-        concerning were security-related. 
+        concerning were security-related. For a more secure application
+        privacy-wise, an authentication system will need to be added to
+        protect against one user from using another's login, and perhaps
+        also to limit who is allowed to view the logins.
       </p>
       <p>
-        Most of the issues stemmed from the application's loose constraints
+        Essentially all of the issues stemmed from the application's loose 
+        constraints
         on user input. The server application is overly trusting over user
         input; it does not sufficiently validate whether the data is present, 
         is in the correct format, and does not contain any malicious content.
         As a result, users can quite easily cause the server to crash or can
         add their own content to the site, allowing them to disrupt user 
         experience and even potentially coerce users into revealing sensitive
-        information. Fortunately, now that these issues have been found, they
-        can be quite easily resolved.
+        information. A malicious user is currently able to render the 
+        application fairly unuseable. Fortunately, now that these issues have 
+        been found, most of them can be quite easily resolved.
       </p>
 
     <h3>Issues Found and Technical Analysis</h3>
@@ -258,24 +263,128 @@
           <li>
             <span class="bold">Description:</span>The code for "/location.json" does
             not check that the login passed in is a string, so a user can add a 
-            MongoDb query to the request. FINISH THIS.
+            MongoDb query to the request. This compromises the integrity of the 
+            "/location.json" API by causing it to behave differently than expected.
+            For example, a user can change the query to find a login not equal to
+            the one passed in or to find any login with a size greater than 2.
           </li>
 
           <li>
             <span class="bold">How it was found:</span> 
             <p>
-              
+              I submitted a GET request with a MongoDb query inserted into the 
+              login by navigating to 
+              <code>drmmap.herokuapp.com/location.json?login[$ne]=mchow</code>
+              on my browser. <code>[$ne]</code> means "not equal" to MongoDb. So,
+              instead of looking for the login <code>mchow</code>, if the 
+              server is vulnerable to this kind of attack, it will look for
+              a login not equal to <code>mchow</code>
             </p>
           </li>
 
           <li>
             <span class="bold">Proof of vulnerability:</span>
-            <p></p>
+            <p>When one navigates to the URL as described, the server returns
+              information linked to a different login rather than returning 
+              information linked to <code>mchow</code> or handling the 
+              invalid input:
+            </p>
+
+            <img src="Screen Shot 2015-04-24 at 1.37.34 PM.png"
+             alt="Server does not handle MongoDb request injection" 
+             class="smaller"/>
           </li>
 
           <li>
             <span class="bold">Resolution:</span>
-            <p> </p>
+            <p>To resolve the issue, verify that the login passed in to the
+              "/location.json" API is in fact a string:
+            </p>
+            <img src="Screen Shot 2015-04-24 at 1.48.37 PM.png"
+            alt="Check that the type of the login is a string"
+            class="smaller" />
+            <p>Now it's no longer vulnerable to query injection:</p>
+            <img src="Screen Shot 2015-04-24 at 1.49.10 PM.png"
+            alt="Server is no longer vulnerable to MongoDb query injection"
+            class="smaller" />
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <h4>No authentication method for logins, locations</h4>
+        <ul>
+          <li>
+            <span class="bold">Location:</span>POST "/sendLocation" API
+          </li>
+
+          <li>
+            <span class="bold">Severity:</span>Moderate. This does not expose
+            any user data that isn't already exposed and doesn't crash the 
+            server, but it allows for data to be very easily falsified and 
+            even the idea of a person logging in is compromised because
+            anyone can assume that person's identity.
+          </li>
+
+          <li>
+            <span class="bold">Description:</span> There is no method of 
+            authenticating whether or not the user checking in under a
+            certain login is the same person who previously checked in
+            under that login (assuming the login has already checked in
+            at least once). So, anyone can change the latitude, longitude,
+            and time of check-in for any login. There is also no validation
+            that the latitude and longitude are within range (0 to 90 for 
+            latitude and -180 to 180 for longitude), so the location 
+            doesn't necessarily correspond to an actual location on Earth.
+            This again compromises the idea of a check-in and if a client
+            using the server is expecting actual locations, it could cause
+            problems in their code.
+          </li>
+
+          <li>
+            <span class="bold">How it was found:</span> 
+            <p>
+              This issue is inherent in the design of the server. I am
+              able to send it any login I choose, and I was able to
+              overwrite the check-in information of people who had
+              previousl logged in by using their login in my POST 
+              request. I was also able to send it any number as a latitude
+              or longitude, even those well outside the valid range.
+            </p>
+          </li>
+
+          <li>
+            <span class="bold">Proof of vulnerability:</span>
+            <p>
+              Using PostMan, I am able to use any login I choose. Likewise
+              for curl. I'm also able to set nearly any latitude and longitude 
+              and the server accepts it:
+            </p>
+            <img src="Screen Shot 2015-04-24 at 10.18.54 PM.png"
+            alt="Server accepts lat and lng out of range"
+            class="smaller" />
+
+          </li>
+
+          <li>
+            <span class="bold">Resolution:</span>
+            <p>To resolve the user login issue, there needs to be an 
+              authenticaiton system that verifies that this user has permission
+              to check-in at the given login. We can do this by having users
+              enter in a password when they check in. Then, when someone tries
+              to check-in at that login again, their check-in is rejected unless
+              the passwords match. Of course, password authentication systems
+              come with a host of other potentially security vulnerabilities, so
+              care will have to be taken in creating it (e.g. passwords should
+              be irreversibly hashed).
+            </p>
+            <p>
+              Fixing the latitude and longitude issue is much simpler: we just 
+              need to do simple boolean comparisons to check that they are in
+              range before storing them (e.g. <code>if (lat < 0) { /* error */ 
+              }</code>). If they're not, we reject the input and respond with 
+              an error message.
+            </p>
           </li>
         </ul>
       </li>
@@ -304,10 +413,19 @@
         </p>
 
       </li>
+
     </ol>
 
     <h3>Conclusion</h3>
-
+    <p>
+      The recommendations I have outlined in this document should cover most 
+      major security and privacy risks of the application and the resolutions
+      are generally simple and pain-free. However, the 
+      fundamental design of the application has a major privacy flaw since it
+      does not authenticate the identity of the person checking in, as 
+      mentioned in issue #4. Adding this feature is a larger task that will
+      require its own security assessment. 
+    </p>
 
   </body>
 </html>
