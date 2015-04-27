@@ -147,15 +147,13 @@
 
           <li>
           <span class="bold">Resolution:</span>
-            To resolve this issue, user input should be 
-            escaped before it is saved into the database. For example, convert
-            the <code>&lt</code> in the input to <code>&amp;lt</code>. Rather
-            than having a blacklist of characters, however, it is always a good
-            idea to have a whitelist of allowable characters. You are more 
-            likely to miss something with a blacklist. So, using regular
-            expressions, convert special characters to their HTML codes and then
-            filter the logins through a whitelist. If any code has already been
-            injected, these database must also be searched and sanitized in the
+            To resolve this issue, user input should be sanitized by escaping
+            special characters before saving the it to the database. 
+            For example, convert
+            the <code>&lt</code> in the input to <code>&amp;lt</code>. If any 
+            code has already been
+            injected, the database must also be searched and those entries
+            must be sanitized in the
             same way.
           </li>
         </ul>
