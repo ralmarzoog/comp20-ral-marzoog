@@ -13,7 +13,8 @@ function parseData() {
         resp = JSON.parse(request.responseText);
         messagesDiv = document.getElementById("messages");
         for (var i = 0; i < resp.length; i++) {
-            messagesDiv.innerHTML += "<p>" + resp[i]["content"] + " - " + resp[i]["username"] + "</p>";
+            var toAdd = "<p>" + resp[i]["content"] + " - " + resp[i]["username"] + "</p>";
+            messagesDiv.innerHTML += toAdd;
         }
     }
 }

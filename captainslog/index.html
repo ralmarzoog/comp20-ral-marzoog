@@ -3,46 +3,45 @@
 <html>
 
 <head>
-	<title>Captain's Log</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<script>
-	  // Most of your work will be done here...
-    $(document).ready(function() {
+    <title>Captain's Log</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            id = "captainslog";
 
-      id = "captainslog";
-      keys = [];
-      for (key in localStorage) {
-        if (key.substring(0,(id.length)) == id) {
-          keys.push(key);
-        }
-      }
+            keys = [];
+            for (key in localStorage) {
+                if (key.substring(0, (id.length)) == id) {
+                  keys.push(key);
+                }
+            }
 
-      keys.sort()
+            keys.sort()
 
-      for (var i = 0; i < keys.length; i++) {
-        $("#log").prepend("<p>" + keys[i].substring(
-            id.length, keys[i].length) + " - " + 
-            localStorage[keys[i]] + "</p>");
-      }
+            for (var i = 0; i < keys.length; i++) {
+                $("#log").prepend("<p>" + keys[i].substring(
+                    id.length, keys[i].length) + " - " + 
+                    localStorage[keys[i]] + "</p>");
+            }
 
-      $("#msg").keyup(function(event) {
-        if (event.keyCode == 13) {
-          entryText = $("#msg").val();
-          $("#msg").val("");
-          now = new Date();
-          localStorage.setItem(id + now, entryText);
-          entry = "<p>" + now + " - " + entryText + "</p>";
-          $("#log").prepend(entry);
-        }
-      });
-    });  
-	</script>
+            $("#msg").keyup(function(event) {
+                if (event.keyCode == 13) {
+                    entryText = $("#msg").val();
+                    $("#msg").val("");
+                    now = new Date();
+                    localStorage.setItem(id + now, entryText);
+                    entry = "<p>" + now + " - " + entryText + "</p>";
+                    $("#log").prepend(entry);
+                }
+            });
+        });  
+    </script>
 </head>
 
 <body>
-	<h1>Captain's Log</h1>
-	<h3>New entry: <input type="text" id="msg" name="msg" size="30" /></h3>
-	<div id="log"></div>
+    <h1>Captain's Log</h1>
+    <h3>New entry: <input type="text" id="msg" name="msg" size="30" /></h3>
+    <div id="log"></div>
 </body>
 </html>
 
